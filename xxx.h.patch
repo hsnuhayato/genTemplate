@@ -1,0 +1,51 @@
+--- wuTest.h	2015-01-16 13:35:56.146394902 +0900
++++ wuTestAfter.h	2015-01-16 13:45:26.114408448 +0900
+@@ -24,8 +24,9 @@
+ // <rtc-template block="consumer_stub_h">
+ 
+ // </rtc-template>
+-
++#include <iostream>
+ using namespace RTC;
++using namespace std;
+ 
+ class wuTest  : public RTC::DataFlowComponentBase
+ {
+@@ -59,7 +60,7 @@
+ 
+   // The execution action that is invoked periodically
+   // former rtc_active_do()
+-  // virtual RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id);
++  virtual RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id);
+ 
+   // The aborting action when main logic error occurred.
+   // former rtc_aborting_entry()
+@@ -67,7 +68,7 @@
+ 
+   // The error action in ERROR state
+   // former rtc_error_do()
+-  // virtual RTC::ReturnCode_t onError(RTC::UniqueId ec_id);
++  virtual RTC::ReturnCode_t onError(RTC::UniqueId ec_id);
+ 
+   // The reset action that is invoked resetting
+   // This is same but different the former rtc_init_entry()
+@@ -81,7 +82,9 @@
+   // no corresponding operation exists in OpenRTm-aist-0.2.0
+   // virtual RTC::ReturnCode_t onRateChanged(RTC::UniqueId ec_id);
+ 
+-
++  void start();
++  void setObjectV(double x, double y, double z, double roll, double pitch, double yaw);
++  
+  protected:
+   // Configuration variable declaration
+   // <rtc-template block="config_declare">
+@@ -138,7 +141,7 @@
+   // </rtc-template>
+ 
+  private:
+-
++  double m_dt;
+ };
+ 
+ 

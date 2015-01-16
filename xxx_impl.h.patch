@@ -1,0 +1,41 @@
+--- wuTestService_impl.h	2015-01-16 13:35:56.162394903 +0900
++++ wuTestService_implAfter.h	2015-01-16 13:37:14.962396776 +0900
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include "wuTestService.hh"
+-
++#include "wuTest.h"
+ 
+ #ifndef WUTESTSERVICE_IMPL_H
+ #define WUTESTSERVICE_IMPL_H
+@@ -14,6 +14,8 @@
+ /*
+  * Example class implementing IDL interface OpenHRP::wuTestService
+  */
++class wuTest;
++
+ class wuTestService_impl
+  : public virtual POA_OpenHRP::wuTestService,
+    public virtual PortableServer::RefCountServantBase
+@@ -22,7 +24,8 @@
+    // Make sure all instances are built on the heap by making the
+    // destructor non-public
+    //virtual ~wuTestService_impl();
+-
++  //for service port
++  wuTest * m_comp;
+  public:
+    // standard constructor
+    wuTestService_impl();
+@@ -37,6 +40,10 @@
+    void hogez();
+    void stop();
+ 
++  void setComponent (wuTest * i_comp) {
++    m_comp = i_comp;
++  }
++
+ };
+ 
+ 

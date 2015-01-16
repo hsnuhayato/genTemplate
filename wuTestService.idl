@@ -1,0 +1,13 @@
+module OpenHRP {
+
+	interface wuTestService
+	{
+		void start();
+		void setObjectV(in double x, in double y,in double z,in double roll,in double pitch,in double yaw);
+		void testMove();
+		void hogex();
+		void hogey();
+		void hogez();
+		void stop();
+	};
+};
