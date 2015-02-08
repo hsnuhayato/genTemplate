@@ -13,7 +13,7 @@
    // <rtc-template block="bind_config">
    // Bind variables and configuration variable
 +  RTC::Properties& prop = getProperties();
-+  coil::stringTo(m_dt, prop["wutest.dt"].c_str());
++  coil::stringTo(m_dt, prop["dt"].c_str());
 +  cerr<<"start sony nstep "<<m_dt<<endl;
  
    // </rtc-template>
