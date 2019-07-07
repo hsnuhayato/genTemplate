@@ -1,0 +1,178 @@
+--- wuTest.cpp	2015-01-16 13:35:55.886394896 +0900
++++ wuTestAfter.cpp	2015-01-16 13:45:26.114408448 +0900
+@@ -44,6 +44,7 @@
+ 
+     // </rtc-template>
+ {
++  m_service0.setComponent(this);
+ }
+ 
+ wuTest::~wuTest()
+@@ -82,12 +83,21 @@
+ 
+   // <rtc-template block="bind_config">
+   // Bind variables and configuration variable
++  RTC::Properties& prop = getProperties();
++  coil::stringTo(m_dt, prop["dt"].c_str());
++  cerr<<"start sony nstep "<<m_dt<<endl;
+ 
+   // </rtc-template>
+   return RTC::RTC_OK;
+ }
+-
+-
++void wuTest::start()
++{
++  cout<<m_profile.instance_name <<" print start"<<endl;
++}
++void wuTest::setObjectV(double x, double y, double z, double roll, double pitch, double yaw)
++{ 
++  cout<<m_profile.instance_name <<" setObjectV "<<x<<" "<<y<<" "<<z<<" "<<roll<<" "<<pitch<<" "<<yaw<<endl;
++}
+ /*
+ RTC::ReturnCode_t wuTest::onFinalize()
+ {
+@@ -118,24 +128,24 @@
+   return RTC::RTC_OK;
+ }
+ */
+-/*
++
+ RTC::ReturnCode_t wuTest::onExecute(RTC::UniqueId ec_id)
+ {
+   return RTC::RTC_OK;
+ }
+-*/
++
+ /*
+ RTC::ReturnCode_t wuTest::onAborting(RTC::UniqueId ec_id)
+ {
+   return RTC::RTC_OK;
+ }
+ */
+-/*
++
+ RTC::ReturnCode_t wuTest::onError(RTC::UniqueId ec_id)
+ {
+   return RTC::RTC_OK;
+ }
+-*/
++
+ /*
+ RTC::ReturnCode_t wuTest::onReset(RTC::UniqueId ec_id)
+ {
+--- wuTest.h	2015-01-16 13:35:56.146394902 +0900
++++ wuTestAfter.h	2015-01-16 13:45:26.114408448 +0900
+@@ -24,8 +24,9 @@
+ // <rtc-template block="consumer_stub_h">
+ 
+ // </rtc-template>
+-
++#include <iostream>
+ using namespace RTC;
++using namespace std;
+ 
+ class wuTest  : public RTC::DataFlowComponentBase
+ {
+@@ -59,7 +60,7 @@
+ 
+   // The execution action that is invoked periodically
+   // former rtc_active_do()
+-  // virtual RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id);
++  virtual RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id);
+ 
+   // The aborting action when main logic error occurred.
+   // former rtc_aborting_entry()
+@@ -67,7 +68,7 @@
+ 
+   // The error action in ERROR state
+   // former rtc_error_do()
+-  // virtual RTC::ReturnCode_t onError(RTC::UniqueId ec_id);
++  virtual RTC::ReturnCode_t onError(RTC::UniqueId ec_id);
+ 
+   // The reset action that is invoked resetting
+   // This is same but different the former rtc_init_entry()
+@@ -81,7 +82,9 @@
+   // no corresponding operation exists in OpenRTm-aist-0.2.0
+   // virtual RTC::ReturnCode_t onRateChanged(RTC::UniqueId ec_id);
+ 
+-
++  void start();
++  void setObjectV(double x, double y, double z, double roll, double pitch, double yaw);
++  
+  protected:
+   // Configuration variable declaration
+   // <rtc-template block="config_declare">
+@@ -138,7 +141,7 @@
+   // </rtc-template>
+ 
+  private:
+-
++  double m_dt;
+ };
+ 
+ 
+--- wuTestService_impl.cpp	2015-01-16 13:35:56.170394903 +0900
++++ wuTestService_implAfter.cpp	2015-01-16 13:45:26.114408448 +0900
+@@ -27,18 +27,12 @@
+  */
+ void wuTestService_impl::start()
+ {
+-  // Please insert your code here and remove the following warning pragma
+-#ifndef WIN32
+-  #warning "Code missing in function <void wuTestService_impl::start()>"
+-#endif
++  m_comp->start();
+ }
+ 
+ void wuTestService_impl::setObjectV(::CORBA::Double x, ::CORBA::Double y, ::CORBA::Double z, ::CORBA::Double roll, ::CORBA::Double pitch, ::CORBA::Double yaw)
+ {
+-  // Please insert your code here and remove the following warning pragma
+-#ifndef WIN32
+-  #warning "Code missing in function <void wuTestService_impl::setObjectV(::CORBA::Double x, ::CORBA::Double y, ::CORBA::Double z, ::CORBA::Double roll, ::CORBA::Double pitch, ::CORBA::Double yaw)>"
+-#endif
++  m_comp->setObjectV(x, y, z, roll, pitch, yaw);
+ }
+ 
+ void wuTestService_impl::testMove()
+--- wuTestService_impl.h	2015-01-16 13:35:56.162394903 +0900
++++ wuTestService_implAfter.h	2015-01-16 13:37:14.962396776 +0900
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include "wuTestService.hh"
+-
++#include "wuTest.h"
+ 
+ #ifndef WUTESTSERVICE_IMPL_H
+ #define WUTESTSERVICE_IMPL_H
+@@ -14,6 +14,8 @@
+ /*
+  * Example class implementing IDL interface OpenHRP::wuTestService
+  */
++class wuTest;
++
+ class wuTestService_impl
+  : public virtual POA_OpenHRP::wuTestService,
+    public virtual PortableServer::RefCountServantBase
+@@ -22,7 +24,8 @@
+    // Make sure all instances are built on the heap by making the
+    // destructor non-public
+    //virtual ~wuTestService_impl();
+-
++  //for service port
++  wuTest * m_comp;
+  public:
+    // standard constructor
+    wuTestService_impl();
+@@ -37,6 +40,10 @@
+    void hogez();
+    void stop();
+ 
++  void setComponent (wuTest * i_comp) {
++    m_comp = i_comp;
++  }
++
+ };
+ 
+ 
